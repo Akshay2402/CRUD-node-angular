@@ -1,0 +1,23 @@
+<!-- Default form login -->
+<form [formGroup]="loginForm" class="text-center border border-light p-5 center" (ngSubmit)="onSubmit()">
+
+  <p class="h4 mb-4">Please Sign in</p>
+
+  <!-- username -->
+  <input type="text" formControlName="username" class="form-control mb-4" placeholder="User Name" required>
+
+  <!-- Password -->
+  <input type="password" formControlName="password" class="form-control mb-4" placeholder="Password" required>
+
+  <div class="d-flex">
+    <div>
+      <!-- Remember me -->
+      <mdb-checkbox [default]="true" (change)="rememberMe($event)">Remember me</mdb-checkbox>
+    </div>
+  </div>
+
+  <!-- Sign in button -->
+  <button  mdbBtn color="info" block="true" class="my-4" type="submit" [disabled]="!loginForm.valid">Sign in</button>
+
+</form>
+<!-- Default form login -->

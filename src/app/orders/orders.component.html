@@ -1,0 +1,154 @@
+<div>
+    <p class="h4 mb-4 " style="margin: 3%; padding-left: 2%">Order details:
+      <br><button type="button" data-toggle="modal" data-target="#fullHeightModalRight" class="btn btn-success" (click) = "createOrder()">Add New Order</button>
+    </p>
+  </div>
+  <div>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="orderNumber">
+        <th mat-header-cell *matHeaderCellDef> Order Number </th>
+        <td mat-cell *matCellDef="let element"> {{element.orderNumber}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="orderDueDate">
+        <th mat-header-cell *matHeaderCellDef> Due Date </th>
+        <td mat-cell *matCellDef="let element"> {{element.orderDueDate | date: 'medium'}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerPhone">
+        <th mat-header-cell *matHeaderCellDef> Phone </th>
+        <td mat-cell *matCellDef="let element"> {{element.customerPhone}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerBuyername">
+        <th mat-header-cell *matHeaderCellDef> Buyer Name </th>
+        <td mat-cell *matCellDef="let element"> {{element.customerBuyername}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerAddress">
+        <th mat-header-cell *matHeaderCellDef> Address </th>
+        <td mat-cell *matCellDef="let element"> {{element.customerAddress}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="orderTotal">
+        <th mat-header-cell *matHeaderCellDef> Total </th>
+        <td mat-cell *matCellDef="let element"> {{element.orderTotal}} </td>
+      </ng-container>editOrder(element)
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Action </th>
+        <td mat-cell *matCellDef="let element">
+          <span> <mat-icon data-toggle="modal" data-target="#editModal" (click)="editOrder(element)" style="cursor: pointer; margin-right: 15px" matTooltip="Edit Order "   color="primary">edit</mat-icon>
+          </span>
+          <span> <mat-icon data-toggle="modal" data-target="#centralModalSm" (click)="deleteOrder(element)" style="cursor: pointer;" matTooltip="Delete Order"  color="warn"> delete</mat-icon>
+          </span> </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  </div>
+
+
+<!-- Add Order Modal -->
+<div class="modal fade right" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true">
+
+<div class="modal-dialog modal-full-height modal-bottom" role="document">
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title w-100" id="myModalLabel">{{modelTitle}}</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <form [formGroup]="addOrder" class="text-center border border-light p-5 center" (ngSubmit)="onSubmit()">
+
+        <input (click)="picker.open()" matInput formControlName="orderDueDate" class="form-control mb-4"  required [matDatepicker]="picker" placeholder="Choose a date">
+        <mat-datepicker #picker></mat-datepicker>
+
+        <input type="text" formControlName="customerPhone" class="form-control mb-4" placeholder="Phone Number" required>
+
+        <input type="text" formControlName="customerBuyername" class="form-control mb-4" placeholder="Customer Name" required>
+
+        <input type="text" formControlName="customerAddress" class="form-control mb-4" placeholder="Address" required>
+
+        <input type="text" formControlName="orderTotal" class="form-control mb-4" placeholder="Total" required>
+
+        <button  (click)="onSubmit()" data-dismiss="modal" mdbBtn color="info" class="my-4" type="submit" [disabled]="!addOrder.valid">Add Order</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+</div>
+
+
+<!-- Delete modal -->
+<div class="modal fade" id="centralModalSm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+
+  <!-- Change class .modal-sm to change the size of the modal -->
+  <div class="modal-dialog modal-sm" role="document">
+
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title w-100" id="myModalLabel">Delete Order!</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete the order?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" (click)="confirmDelete()">Delete Order</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- edit order model -->
+<div class="modal fade right" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+aria-hidden="true">
+
+<div class="modal-dialog modal-full-height modal-bottom" role="document">
+
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title w-100" id="myModalLabel"> Update Order</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <form [formGroup]="updateOrder" class="text-center border border-light p-5 center" (ngSubmit)="updateOrderDetails()">
+
+        <input (click)="editPicker.open()" matInput formControlName="orderDueDate" class="form-control mb-4"  required [matDatepicker]="editPicker" placeholder="Choose a date">
+        <mat-datepicker #editPicker></mat-datepicker>
+
+        <input type="text" formControlName="customerPhone" class="form-control mb-4" placeholder="Phone Number" required>
+
+        <input type="text" formControlName="customerBuyername" class="form-control mb-4" placeholder="Customer Name" required>
+
+        <input type="text" formControlName="customerAddress" class="form-control mb-4" placeholder="Address" required>
+
+        <input type="text" formControlName="orderTotal" class="form-control mb-4" placeholder="Total" required>
+
+        <button  (click)="updateOrderDetails()" data-dismiss="modal" mdbBtn color="info" class="my-4" type="submit" [disabled]="!updateOrder.valid">Update Order</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+</div>
